@@ -35,9 +35,39 @@ func GetAESDecrypted(encrypted, key, iv string) ([]byte, error) {
 }
 
 // PKCS5UnPadding  pads a certain blob of data with necessary data to be used in AES block cipher
+//func PKCS5UnPadding(src []byte) []byte {
+//	length := len(src)
+//	unpadding := int(src[length-1])
+//
+//	return src[:(length - unpadding)]
+//
+//}
+
+// PKCS5UnPadding pads a certain blob of data with necessary data to be used in AES block cipher
 func PKCS5UnPadding(src []byte) []byte {
 	length := len(src)
+
+	if length == 0 {
+		// Avoid panic for empty source data
+		return src
+	}
+
 	unpadding := int(src[length-1])
+
+	if unpadding > length {
+		// Avoid panic for invalid padding value
+		return src
+	}
+
+	if unpadding == 0 {
+		// Avoid panic for zero padding
+		return src
+	}
+
+	if length < unpadding {
+		// Avoid panic for invalid padding length
+		return src
+	}
 
 	return src[:(length - unpadding)]
 }
